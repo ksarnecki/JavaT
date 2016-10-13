@@ -83,6 +83,21 @@ NumericBinaryExpressionFake::~NumericBinaryExpressionFake() {
 }
 //----------------------------------
 
+//------------- VariableDeclaratorFake ---------------
+VariableDeclaratorFake::VariableDeclaratorFake() {
+}
+AnsiString VariableDeclaratorFake::toXML() const {
+  StringBuffer _xml;
+  _xml += "<VariableDeclaratorFake>";
+  for (int _i=0;_i<Size();_i++)
+    _xml += (*this)[_i].toXML();
+    _xml += "</VariableDeclaratorFake>";
+    return _xml.get();
+}
+VariableDeclaratorFake::~VariableDeclaratorFake() {
+}
+//----------------------------------
+
 //------------- numericUnaryExpressionFake ---------------
 numericUnaryExpressionFake::numericUnaryExpressionFake() {
 }
@@ -140,6 +155,21 @@ AnsiString ForStatementFake::toXML() const {
     return _xml.get();
 }
 ForStatementFake::~ForStatementFake() {
+}
+//----------------------------------
+
+//------------- ForeachStatementFake ---------------
+ForeachStatementFake::ForeachStatementFake() {
+}
+AnsiString ForeachStatementFake::toXML() const {
+  StringBuffer _xml;
+  _xml += "<ForeachStatementFake>";
+  for (int _i=0;_i<Size();_i++)
+    _xml += (*this)[_i].toXML();
+    _xml += "</ForeachStatementFake>";
+    return _xml.get();
+}
+ForeachStatementFake::~ForeachStatementFake() {
 }
 //----------------------------------
 
@@ -453,20 +483,21 @@ FloatExpression::~FloatExpression() {
 //------------- Expression ---------------
 const int Expression::_TypeEmpty = 0;
 const int Expression::_TypeVariableAssigment = 1;
-const int Expression::_TypeCreatingExpression = 2;
-const int Expression::_TypeIdentifier = 3;
-const int Expression::_TypeArrayIdentifier = 4;
-const int Expression::_TypeMultiIdentifier = 5;
-const int Expression::_TypeTemplateIdentifier = 6;
-const int Expression::_TypeFunctionCallExpression = 7;
-const int Expression::_TypeTestingExpression = 8;
-const int Expression::_TypeNumericBinaryExpression = 9;
-const int Expression::_TypeNumericUnaryExpression = 10;
-const int Expression::_TypeCondOperatorExpression = 11;
-const int Expression::_TypeStringExpression = 12;
-const int Expression::_TypeFloatExpression = 13;
-const int Expression::_TypeArrayCreatingExpression = 14;
-const int Expression::_TypeAwaitExpression = 15;
+const int Expression::_TypeVariableDeclarator = 2;
+const int Expression::_TypeCreatingExpression = 3;
+const int Expression::_TypeIdentifier = 4;
+const int Expression::_TypeArrayIdentifier = 5;
+const int Expression::_TypeMultiIdentifier = 6;
+const int Expression::_TypeTemplateIdentifier = 7;
+const int Expression::_TypeFunctionCallExpression = 8;
+const int Expression::_TypeTestingExpression = 9;
+const int Expression::_TypeNumericBinaryExpression = 10;
+const int Expression::_TypeNumericUnaryExpression = 11;
+const int Expression::_TypeCondOperatorExpression = 12;
+const int Expression::_TypeStringExpression = 13;
+const int Expression::_TypeFloatExpression = 14;
+const int Expression::_TypeArrayCreatingExpression = 15;
+const int Expression::_TypeAwaitExpression = 16;
 void Expression::init(int type, void* ptr) {
   if (type==_TypeEmpty) {
     _type = type;
@@ -474,6 +505,9 @@ void Expression::init(int type, void* ptr) {
   } else if (type==_TypeVariableAssigment) {
     _type = type;
     _ptr = new VariableAssigment(*(VariableAssigment*) ptr);
+  } else if (type==_TypeVariableDeclarator) {
+    _type = type;
+    _ptr = new VariableDeclarator(*(VariableDeclarator*) ptr);
   } else if (type==_TypeCreatingExpression) {
     _type = type;
     _ptr = new CreatingExpression(*(CreatingExpression*) ptr);
@@ -526,6 +560,10 @@ void Expression::clean() {
   } else if (_type==_TypeVariableAssigment) {
     _type = -1;
     delete (VariableAssigment*) _ptr;
+    _ptr = 0;
+  } else if (_type==_TypeVariableDeclarator) {
+    _type = -1;
+    delete (VariableDeclarator*) _ptr;
     _ptr = 0;
   } else if (_type==_TypeCreatingExpression) {
     _type = -1;
@@ -601,6 +639,9 @@ bool Expression::isEmpty() const {
 bool Expression::isVariableAssigment() const {
   return _type==_TypeVariableAssigment;
 }
+bool Expression::isVariableDeclarator() const {
+  return _type==_TypeVariableDeclarator;
+}
 bool Expression::isCreatingExpression() const {
   return _type==_TypeCreatingExpression;
 }
@@ -652,6 +693,16 @@ VariableAssigment& Expression::asVariableAssigment() {
   if (_type!=_TypeVariableAssigment)
     throw Exception("Expression::asVariableAssigment");
   return *(VariableAssigment*) _ptr;
+}
+const VariableDeclarator& Expression::asVariableDeclarator() const {
+  if (_type!=_TypeVariableDeclarator)
+    throw Exception("Expression::asVariableDeclarator");
+  return *(VariableDeclarator*) _ptr;
+}
+VariableDeclarator& Expression::asVariableDeclarator() {
+  if (_type!=_TypeVariableDeclarator)
+    throw Exception("Expression::asVariableDeclarator");
+  return *(VariableDeclarator*) _ptr;
 }
 const CreatingExpression& Expression::asCreatingExpression() const {
   if (_type!=_TypeCreatingExpression)
@@ -802,32 +853,34 @@ AnsiString Expression::toXML() const {
     else if (_type==1)
     _xml += "<variableAssigment>" + ((VariableAssigment*) _ptr)->toXML() + "</variableAssigment>";
     else if (_type==2)
-    _xml += "<creatingExpression>" + ((CreatingExpression*) _ptr)->toXML() + "</creatingExpression>";
+    _xml += "<variableDeclarator>" + ((VariableDeclarator*) _ptr)->toXML() + "</variableDeclarator>";
     else if (_type==3)
-    _xml += "<identifier>" + ((IdentifierExpression*) _ptr)->toXML() + "</identifier>";
+    _xml += "<creatingExpression>" + ((CreatingExpression*) _ptr)->toXML() + "</creatingExpression>";
     else if (_type==4)
-    _xml += "<arrayIdentifier>" + ((ArrayIdentifier*) _ptr)->toXML() + "</arrayIdentifier>";
+    _xml += "<identifier>" + ((IdentifierExpression*) _ptr)->toXML() + "</identifier>";
     else if (_type==5)
-    _xml += "<multiIdentifier>" + ((MultiIdentifier*) _ptr)->toXML() + "</multiIdentifier>";
+    _xml += "<arrayIdentifier>" + ((ArrayIdentifier*) _ptr)->toXML() + "</arrayIdentifier>";
     else if (_type==6)
-    _xml += "<templateIdentifier>" + ((TemplateIdentifier*) _ptr)->toXML() + "</templateIdentifier>";
+    _xml += "<multiIdentifier>" + ((MultiIdentifier*) _ptr)->toXML() + "</multiIdentifier>";
     else if (_type==7)
-    _xml += "<functionCallExpression>" + ((FunctionCallExpression*) _ptr)->toXML() + "</functionCallExpression>";
+    _xml += "<templateIdentifier>" + ((TemplateIdentifier*) _ptr)->toXML() + "</templateIdentifier>";
     else if (_type==8)
-    _xml += "<testingExpression>" + ((TestingExpression*) _ptr)->toXML() + "</testingExpression>";
+    _xml += "<functionCallExpression>" + ((FunctionCallExpression*) _ptr)->toXML() + "</functionCallExpression>";
     else if (_type==9)
-    _xml += "<numericBinaryExpression>" + ((NumericBinaryExpression*) _ptr)->toXML() + "</numericBinaryExpression>";
+    _xml += "<testingExpression>" + ((TestingExpression*) _ptr)->toXML() + "</testingExpression>";
     else if (_type==10)
-    _xml += "<numericUnaryExpression>" + ((NumericUnaryExpression*) _ptr)->toXML() + "</numericUnaryExpression>";
+    _xml += "<numericBinaryExpression>" + ((NumericBinaryExpression*) _ptr)->toXML() + "</numericBinaryExpression>";
     else if (_type==11)
-    _xml += "<condOperatorExpression>" + ((CondOperatorExpression*) _ptr)->toXML() + "</condOperatorExpression>";
+    _xml += "<numericUnaryExpression>" + ((NumericUnaryExpression*) _ptr)->toXML() + "</numericUnaryExpression>";
     else if (_type==12)
-    _xml += "<stringExpression>" + ((StringExpression*) _ptr)->toXML() + "</stringExpression>";
+    _xml += "<condOperatorExpression>" + ((CondOperatorExpression*) _ptr)->toXML() + "</condOperatorExpression>";
     else if (_type==13)
-    _xml += "<floatExpression>" + ((FloatExpression*) _ptr)->toXML() + "</floatExpression>";
+    _xml += "<stringExpression>" + ((StringExpression*) _ptr)->toXML() + "</stringExpression>";
     else if (_type==14)
-    _xml += "<arrayCreatingExpression>" + ((ArrayCreatingExpression*) _ptr)->toXML() + "</arrayCreatingExpression>";
+    _xml += "<floatExpression>" + ((FloatExpression*) _ptr)->toXML() + "</floatExpression>";
     else if (_type==15)
+    _xml += "<arrayCreatingExpression>" + ((ArrayCreatingExpression*) _ptr)->toXML() + "</arrayCreatingExpression>";
+    else if (_type==16)
     _xml += "<awaitExpression>" + ((AwaitExpression*) _ptr)->toXML() + "</awaitExpression>";
     else
       throw Exception("Expression::toXML(" + AnsiString(_type) + ")");
@@ -848,6 +901,12 @@ Expression Expression::createVariableAssigment(const VariableAssigment& _param) 
   Expression _value;
   _value._type = _TypeVariableAssigment;
   _value._ptr = new VariableAssigment(_param);
+  return _value;
+}
+Expression Expression::createVariableDeclarator(const VariableDeclarator& _param) {
+  Expression _value;
+  _value._type = _TypeVariableDeclarator;
+  _value._ptr = new VariableDeclarator(_param);
   return _value;
 }
 Expression Expression::createCreatingExpression(const CreatingExpression& _param) {
@@ -1761,8 +1820,9 @@ const int Statement::_TypeBlockStatement = 3;
 const int Statement::_TypeMergeStatement = 4;
 const int Statement::_TypeReturnStatement = 5;
 const int Statement::_TypeForStatement = 6;
-const int Statement::_TypeWhileStatement = 7;
-const int Statement::_TypeIfStatement = 8;
+const int Statement::_TypeForeachStatement = 7;
+const int Statement::_TypeWhileStatement = 8;
+const int Statement::_TypeIfStatement = 9;
 void Statement::init(int type, void* ptr) {
   if (type==_TypeEmpty) {
     _type = type;
@@ -1785,6 +1845,9 @@ void Statement::init(int type, void* ptr) {
   } else if (type==_TypeForStatement) {
     _type = type;
     _ptr = new ForStatement(*(ForStatement*) ptr);
+  } else if (type==_TypeForeachStatement) {
+    _type = type;
+    _ptr = new ForeachStatement(*(ForeachStatement*) ptr);
   } else if (type==_TypeWhileStatement) {
     _type = type;
     _ptr = new WhileStatement(*(WhileStatement*) ptr);
@@ -1821,6 +1884,10 @@ void Statement::clean() {
   } else if (_type==_TypeForStatement) {
     _type = -1;
     delete (ForStatement*) _ptr;
+    _ptr = 0;
+  } else if (_type==_TypeForeachStatement) {
+    _type = -1;
+    delete (ForeachStatement*) _ptr;
     _ptr = 0;
   } else if (_type==_TypeWhileStatement) {
     _type = -1;
@@ -1862,6 +1929,9 @@ bool Statement::isReturnStatement() const {
 }
 bool Statement::isForStatement() const {
   return _type==_TypeForStatement;
+}
+bool Statement::isForeachStatement() const {
+  return _type==_TypeForeachStatement;
 }
 bool Statement::isWhileStatement() const {
   return _type==_TypeWhileStatement;
@@ -1929,6 +1999,16 @@ ForStatement& Statement::asForStatement() {
     throw Exception("Statement::asForStatement");
   return *(ForStatement*) _ptr;
 }
+const ForeachStatement& Statement::asForeachStatement() const {
+  if (_type!=_TypeForeachStatement)
+    throw Exception("Statement::asForeachStatement");
+  return *(ForeachStatement*) _ptr;
+}
+ForeachStatement& Statement::asForeachStatement() {
+  if (_type!=_TypeForeachStatement)
+    throw Exception("Statement::asForeachStatement");
+  return *(ForeachStatement*) _ptr;
+}
 const WhileStatement& Statement::asWhileStatement() const {
   if (_type!=_TypeWhileStatement)
     throw Exception("Statement::asWhileStatement");
@@ -1968,8 +2048,10 @@ AnsiString Statement::toXML() const {
     else if (_type==6)
     _xml += "<forStatement>" + ((ForStatement*) _ptr)->toXML() + "</forStatement>";
     else if (_type==7)
-    _xml += "<whileStatement>" + ((WhileStatement*) _ptr)->toXML() + "</whileStatement>";
+    _xml += "<foreachStatement>" + ((ForeachStatement*) _ptr)->toXML() + "</foreachStatement>";
     else if (_type==8)
+    _xml += "<whileStatement>" + ((WhileStatement*) _ptr)->toXML() + "</whileStatement>";
+    else if (_type==9)
     _xml += "<ifStatement>" + ((IfStatement*) _ptr)->toXML() + "</ifStatement>";
     else
       throw Exception("Statement::toXML(" + AnsiString(_type) + ")");
@@ -2020,6 +2102,12 @@ Statement Statement::createForStatement(const ForStatement& _param) {
   Statement _value;
   _value._type = _TypeForStatement;
   _value._ptr = new ForStatement(_param);
+  return _value;
+}
+Statement Statement::createForeachStatement(const ForeachStatement& _param) {
+  Statement _value;
+  _value._type = _TypeForeachStatement;
+  _value._ptr = new ForeachStatement(_param);
   return _value;
 }
 Statement Statement::createWhileStatement(const WhileStatement& _param) {
@@ -2175,6 +2263,40 @@ ForInit ForInit::createDecl(const VariableDeclarator& _param) {
 }
 
 
+//----------------------------------
+
+//------------- ForeachStatement ---------------
+ForeachStatement::ForeachStatement(const VariableDeclarator& _iterator, const Expression& _object, const Statement& _body) : iterator(_iterator), object(_object), body(_body) {
+}
+const VariableDeclarator& ForeachStatement::getIterator() const {
+  return iterator;
+}
+VariableDeclarator& ForeachStatement::getIterator() {
+  return iterator;
+}
+const Expression& ForeachStatement::getObject() const {
+  return object;
+}
+Expression& ForeachStatement::getObject() {
+  return object;
+}
+const Statement& ForeachStatement::getBody() const {
+  return body;
+}
+Statement& ForeachStatement::getBody() {
+  return body;
+}
+AnsiString ForeachStatement::toXML() const {
+  StringBuffer _xml;
+  _xml += "<ForeachStatement>";
+    _xml += "<iterator>" + iterator.toXML() + "</iterator>";
+    _xml += "<object>" + object.toXML() + "</object>";
+    _xml += "<body>" + body.toXML() + "</body>";
+  _xml += "</ForeachStatement>";
+  return _xml.get();
+}
+ForeachStatement::~ForeachStatement() {
+}
 //----------------------------------
 
 //------------- ForStatement ---------------

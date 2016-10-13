@@ -1,11 +1,15 @@
-CFLAGS=-c -Wall -I. -I../Common -I./langs/cs -fpermissive -w
+CFLAGS=-c -Wall -I. -I../Common -I./langs/cs -I./langs/php -fpermissive -w
 LFLAGS=-Wall -O2 -w -static-libgcc -static-libstdc++
 CC=g++
 
+CORE= JavaT.o StringBuffer.o AnsiString.o Exception.o LineStream.o LexicalData.o SyntaxData.o Translator.o  Builder.o
+CSOBJ= CSTranslator.o CSHashMap.o CSArray.o CSMatcher.o CSPattern.o CSDBConn.o CSString.o CSSDBResult.o CSMapEntry.o CSInteger.o
+PHPOBJ= PHPTranslator.o PHPArray.o PHPHashMap.o
+
 all: JavaT
 
-JavaT: LexicalData.o StringBuffer.o SyntaxData.o JavaT.o AnsiString.o Exception.o LineStream.o Translator.o CSTranslator.o Builder.o CSHashMap.o CSArray.o CSMatcher.o CSPattern.o CSDBConn.o CSString.o CSSDBResult.o CSInteger.o
-	$(CC) $(LFLAGS) -o JavaT JavaT.o StringBuffer.o AnsiString.o Exception.o LineStream.o LexicalData.o SyntaxData.o Translator.o CSTranslator.o Builder.o CSHashMap.o CSArray.o CSMatcher.o CSPattern.o CSDBConn.o CSString.o CSSDBResult.o CSInteger.o
+JavaT: $(CORE) $(CSOBJ) $(PHPOBJ)
+	$(CC) $(LFLAGS) -o JavaT $(CORE) $(CSOBJ) $(PHPOBJ)
 
 Data.o: Data.cpp
 	$(CC) $(CFLAGS) Data.cpp
@@ -34,6 +38,9 @@ CSTranslator.o: langs/cs/CSTranslator.cpp
 CSHashMap.o: langs/cs/support/CSHashMap.cpp
 	$(CC) $(CFLAGS) langs/cs/support/CSHashMap.cpp
   
+CSMapEntry.o: langs/cs/support/CSMapEntry.cpp
+	$(CC) $(CFLAGS) langs/cs/support/CSMapEntry.cpp
+  
 CSMatcher.o: langs/cs/support/CSMatcher.cpp
 	$(CC) $(CFLAGS) langs/cs/support/CSMatcher.cpp
   
@@ -54,6 +61,15 @@ CSDBConn.o: langs/cs/support/CSDBConn.cpp
   
 CSString.o: langs/cs/support/CSString.cpp
 	$(CC) $(CFLAGS) langs/cs/support/CSString.cpp
+  
+PHPTranslator.o: langs/php/PHPTranslator.cpp 
+	$(CC) $(CFLAGS) langs/php/PHPTranslator.cpp 
+  
+PHPArray.o: langs/php/support/PHPArray.cpp 
+	$(CC) $(CFLAGS) langs/php/support/PHPArray.cpp 
+
+PHPHashMap.o: langs/php/support/PHPHashMap.cpp 
+	$(CC) $(CFLAGS) langs/php/support/PHPHashMap.cpp 
   
 AnsiString.o: ../Common/AnsiString.cpp
 	$(CC) $(CFLAGS) ../Common/AnsiString.cpp

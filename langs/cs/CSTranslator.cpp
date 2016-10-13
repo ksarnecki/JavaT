@@ -134,11 +134,14 @@ void CSTranslator::prepareMultiIdentifierExpression(const MultiIdentifier& mi, T
   printf("/* init obj %s\n exp %s */\n\n", r.toXML().c_str(), mi.toXML().c_str());
    
 	  if(r.isJavaLangArray()) {
-		Expression e = CSArray::changeMethod(mi);
-		if(!e.isEmpty()) {
-		  prepareExpression(e, types, builder);
-		  return;
-		}
+      if(mi.getLex().isArrayIdentifier()) {  //do poprawy z poziomu gramatyki 
+        
+      }
+      Expression e = CSArray::changeMethod(mi);
+      if(!e.isEmpty()) {
+        prepareExpression(e, types, builder);
+        return;
+      }
 	  }
 	  if(r.isLkSDBResult()) {
 		Expression e = CSSDBResult::changeMethod(mi);
@@ -177,11 +180,18 @@ void CSTranslator::prepareMultiIdentifierExpression(const MultiIdentifier& mi, T
 	  }
 	  if(r.isJavaLangString()) {
 		Expression e = CSString::changeMethod(mi);
-    printf("/* isJavaLangString %s => %s */\n\n", mi.getLex().toXML().c_str(), e.toXML().c_str());
 		if(!e.isEmpty()) {
 		  prepareExpression(e, types, builder);
 		  return;
 		}
+    if(r.isJavaUtilMapEntry()) {
+      Expression e = CSMapEntry::changeMethod(mi);
+      printf("/* isJavaUtilMapEntry %s => %s */\n\n", mi.getLex().toXML().c_str(), e.toXML().c_str());
+      if(!e.isEmpty()) {
+        prepareExpression(e, types, builder);
+        return;
+      }
+    }
   }
   
   prepareExpression(mi.getLex(), types, builder);
@@ -316,6 +326,15 @@ void CSTranslator::prepareForStatement(const ForStatement& f, Types& types, Buil
   prepareExpression(f.getCondition(), types, builder);
   builder.append(";");
   prepareExpression(f.getAfter(), types, builder);
+  builder.append(")");
+  prepareStatement(f.getBody(), types, builder);
+}
+
+void CSTranslator::prepareForeachStatement(const ForeachStatement& f, Types& types, Builder& builder) {
+  builder.append("foreach(");
+  prepareVariableDeclarator(f.getIterator(), types, builder);
+  builder.append(":");
+  prepareExpression(f.getObject(), types, builder);
   builder.append(")");
   prepareStatement(f.getBody(), types, builder);
 }

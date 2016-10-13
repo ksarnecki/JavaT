@@ -20,6 +20,10 @@ void ind(int x) {
     printf(" ");
 }
 
+AnsiString Builder::act() {
+  return lines[lines.Size()-1];
+}
+
 void Builder::next() {
   lines.Insert("");
 }

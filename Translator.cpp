@@ -47,6 +47,8 @@ void Translator::prepareExpression(const Expression& e, Types& types, Builder& b
 void Translator::prepareStatement(const Statement& s, Types& types, Builder& builder) {
   if(s.isForStatement()) {
     prepareForStatement(s.asForStatement(), types, builder);
+  } else if(s.isForeachStatement()) {
+    prepareForeachStatement(s.asForeachStatement(), types, builder);
   } else if(s.isBlockStatement()) {
     prepareBlockStatement(s.asBlockStatement(), types, builder);
   } else if(s.isVariableDeclaration()) {
@@ -103,23 +105,23 @@ RealType getMethodType(const RealType& rt, const Expression& e) {
   } else if(e.isFunctionCallExpression()) {
 	  AnsiString method = e.asFunctionCallExpression().getName().asIdentifier().getValue();
 	  if(rt.isJavaUtilHashMap()) {
-		if(method=="get")
-		  return rt.asJavaUtilHashMap().getValue();
+		  if(method=="get")
+		    return rt.asJavaUtilHashMap().getValue();
 	    if(method=="entrySet") //oszustwo
-		  return rt;
-		if(method=="toArray") //oszustwo
-		  return RealType::createJavaLangArray(rt.asJavaUtilHashMap().getValue());  
+		    return rt;
+		  if(method=="toArray") //oszustwo
+		    return RealType::createJavaLangArray(RealType::createJavaUtilMapEntry(MapEntry(rt.asJavaUtilHashMap().getKey(), rt.asJavaUtilHashMap().getValue())));  
 	  }
   }
-  //printf("/*[getMethodType] ? %s %s*/\n\n", rt.toXML().c_str(), e.toXML().c_str());
   return RealType::createUnknown();
 }
 
 RealType Translator::getType(const Expression& e, const Types& types) {
+  //printf("/*[getType] ? %s*/\n\n", e.toXML().c_str());
   if(e.isIdentifier()) {
     if(findTypePos(e.asIdentifier().getValue(), types)!=-1)
       return types[findTypePos(e.asIdentifier().getValue(), types)].getRealType();
-	return getBasicRealType(e.asIdentifier().getValue());
+    return getBasicRealType(e.asIdentifier().getValue());
   }
   if(e.isArrayIdentifier()) {
     if(e.asArrayIdentifier().getArray().isIdentifier() && findTypePos(e.asArrayIdentifier().getArray().asIdentifier().getValue(), types)!=-1)
@@ -127,10 +129,9 @@ RealType Translator::getType(const Expression& e, const Types& types) {
     return getType(e.asArrayIdentifier().getArray(), types);
   }
   if(e.isMultiIdentifier()) {
-	RealType rt = getType(e.asMultiIdentifier().getLex(), types);
-	return getMethodType(rt, e.asMultiIdentifier().getRex());
+    RealType rt = getType(e.asMultiIdentifier().getLex(), types);
+    return getMethodType(rt, e.asMultiIdentifier().getRex());
   }
-  //printf("/*[getType] ? %s*/\n\n", e.toXML().c_str());
   return RealType::createUnknown();
 }
 

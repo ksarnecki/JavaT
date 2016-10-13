@@ -1,7 +1,6 @@
 
 #include "SyntaxData.h"
 #include "Exception.h"
-#include "StringBuffer.h"
 //------------- int ---------------
 //----------------------------------
 
@@ -11,28 +10,12 @@
 //------------- HashMapFake ---------------
 HashMapFake::HashMapFake() {
 }
-AnsiString HashMapFake::toXML() const {
-  StringBuffer _xml;
-  _xml += "<HashMapFake>";
-  for (int _i=0;_i<Size();_i++)
-    _xml += (*this)[_i].toXML();
-    _xml += "</HashMapFake>";
-    return _xml.get();
-}
 HashMapFake::~HashMapFake() {
 }
 //----------------------------------
 
 //------------- MapEntryFake ---------------
 MapEntryFake::MapEntryFake() {
-}
-AnsiString MapEntryFake::toXML() const {
-  StringBuffer _xml;
-  _xml += "<MapEntryFake>";
-  for (int _i=0;_i<Size();_i++)
-    _xml += (*this)[_i].toXML();
-    _xml += "</MapEntryFake>";
-    return _xml.get();
 }
 MapEntryFake::~MapEntryFake() {
 }
@@ -196,34 +179,6 @@ MapEntry& RealType::asJavaUtilMapEntry() {
   return *(MapEntry*) _ptr;
 }
 
-AnsiString RealType::toXML() const {
-  StringBuffer _xml;
-   _xml += "<RealType>";
-    if (_type==0)
-      _xml += "<javaLangInteger/>";
-    else if (_type==1)
-      _xml += "<javaLangString/>";
-    else if (_type==2)
-    _xml += "<javaLangArray>" + ((RealType*) _ptr)->toXML() + "</javaLangArray>";
-    else if (_type==3)
-      _xml += "<javaUtilRegexPattern/>";
-    else if (_type==4)
-      _xml += "<javaUtilRegexMatcher/>";
-    else if (_type==5)
-    _xml += "<javaUtilHashMap>" + ((HashMap*) _ptr)->toXML() + "</javaUtilHashMap>";
-    else if (_type==6)
-    _xml += "<javaUtilMapEntry>" + ((MapEntry*) _ptr)->toXML() + "</javaUtilMapEntry>";
-    else if (_type==7)
-      _xml += "<lkDBConn/>";
-    else if (_type==8)
-      _xml += "<lkSDBResult/>";
-    else if (_type==9)
-      _xml += "<unknown/>";
-    else
-      throw Exception("RealType::toXML(" + AnsiString(_type) + ")");
-    _xml += "</RealType>";
-    return _xml.get();
-}
 
 RealType::~RealType() {
   clean();
@@ -307,14 +262,6 @@ const RealType& HashMap::getValue() const {
 RealType& HashMap::getValue() {
   return value;
 }
-AnsiString HashMap::toXML() const {
-  StringBuffer _xml;
-  _xml += "<HashMap>";
-    _xml += "<key>" + key.toXML() + "</key>";
-    _xml += "<value>" + value.toXML() + "</value>";
-  _xml += "</HashMap>";
-  return _xml.get();
-}
 HashMap::~HashMap() {
 }
 //----------------------------------
@@ -333,14 +280,6 @@ const RealType& MapEntry::getValue() const {
 }
 RealType& MapEntry::getValue() {
   return value;
-}
-AnsiString MapEntry::toXML() const {
-  StringBuffer _xml;
-  _xml += "<MapEntry>";
-    _xml += "<key>" + key.toXML() + "</key>";
-    _xml += "<value>" + value.toXML() + "</value>";
-  _xml += "</MapEntry>";
-  return _xml.get();
 }
 MapEntry::~MapEntry() {
 }
@@ -361,28 +300,12 @@ const RealType& TypeInfo::getRealType() const {
 RealType& TypeInfo::getRealType() {
   return realType;
 }
-AnsiString TypeInfo::toXML() const {
-  StringBuffer _xml;
-  _xml += "<TypeInfo>";
-    _xml += "<name><![CDATA[" + AnsiString(name)+"]]></name>";
-    _xml += "<realType>" + realType.toXML() + "</realType>";
-  _xml += "</TypeInfo>";
-  return _xml.get();
-}
 TypeInfo::~TypeInfo() {
 }
 //----------------------------------
 
 //------------- Types ---------------
 Types::Types() {
-}
-AnsiString Types::toXML() const {
-  StringBuffer _xml;
-  _xml += "<Types>";
-  for (int _i=0;_i<Size();_i++)
-    _xml += (*this)[_i].toXML();
-    _xml += "</Types>";
-    return _xml.get();
 }
 Types::~Types() {
 }

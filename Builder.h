@@ -12,6 +12,7 @@ class Builder {
   public:
     AnsiString expressionToString(const Expression&);
     
+    AnsiString act();
     void append(const AnsiString&);
     void appendLine(const AnsiString&);
     void next();

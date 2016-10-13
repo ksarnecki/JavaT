@@ -11,6 +11,7 @@
 
 #include "Translator.h"
 
+#include "support/CSMapEntry.h"
 #include "support/CSHashMap.h"
 #include "support/CSArray.h"
 #include "support/CSPattern.h"
@@ -34,6 +35,7 @@ class CSTranslator : public Translator {
   /* Statements => */
   virtual void prepareBlockStatement(const BlockStatement&, Types&, Builder&);
   virtual void prepareForStatement(const ForStatement&, Types&, Builder&);
+  virtual void prepareForeachStatement(const ForeachStatement&, Types&, Builder&);
   virtual void prepareVariableDeclarator(const VariableDeclarator&, Types&, Builder&);
   virtual void prepareVariableDeclaratorStatement(const VariableDeclarator&, Types&, Builder&);
   virtual void prepareExpressionStatement(const Expression&, Types&, Builder&);

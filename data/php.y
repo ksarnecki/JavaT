@@ -220,10 +220,21 @@ variableDeclarator : typeName expression {
   $$ = new Box<VariableDeclarator>(VariableDeclarator(xbox<Expression>($1), xbox<Expression>($2), VariableInitializer::createDefault()));
 }
 
+variableDeclarator : modifiers typeName expression {
+  deb("[variableDeclarator] ");
+  $$ = new Box<VariableDeclarator>(VariableDeclarator(xbox<Expression>($2), xbox<Expression>($3), VariableInitializer::createDefault()));
+}
+
 variableDeclarator : typeName expression '=' expression {
   deb("[variableDeclarator] ");
   Expression e = xbox<Expression>($4);
   $$ = new Box<VariableDeclarator>(VariableDeclarator(xbox<Expression>($1), xbox<Expression>($2), VariableInitializer::createValue(e)));
+}
+
+variableDeclarator : modifiers typeName expression '=' expression {
+  deb("[variableDeclarator] ");
+  Expression e = xbox<Expression>($5);
+  $$ = new Box<VariableDeclarator>(VariableDeclarator(xbox<Expression>($2), xbox<Expression>($3), VariableInitializer::createValue(e)));
 }
 
 methodName : TEXT {
@@ -264,6 +275,10 @@ expression : expression '.' expression {
   deb("[expression '.' expression ] " + AnsiString($$));
 }
 
+expression : variableDeclarator {
+  VariableDeclarator var = xbox<VariableDeclarator>($1);
+  $$ = new Box<Expression>(Expression::createVariableDeclarator(var));
+}
 
 expression : expression '=' expression {
   Expression obj = xbox<Expression>($1);
@@ -497,6 +512,14 @@ statement : FOR PBEG expression ';' expression ';' expression PEND statement {
   $$ = new Box<Statement>(Statement::createForStatement(f));
 }
 
+statement : FOR PBEG variableDeclarator ':' expression PEND statement {
+  VariableDeclarator iterator = xbox<VariableDeclarator>($3);
+  Expression object = xbox<Expression>($5);
+  Statement body = xbox<Statement>($7);
+  ForeachStatement f = ForeachStatement(iterator, object, body);
+  $$ = new Box<Statement>(Statement::createForeachStatement(f));
+}
+
 statement : FOR PBEG variableDeclarator ';' expression ';' expression PEND statement {
   VariableDeclarator init = xbox<VariableDeclarator>($3);
   Expression cond = xbox<Expression>($5);
@@ -546,12 +569,23 @@ methodDeclarator : modifiers typeName methodName PBEG params PEND blockStatement
   $$ = new Box<MethodDeclarator>(m);
 }
 
-/*
+methodDeclarator : modifiers methodName PBEG params PEND blockStatement  {
+  deb("[methodDeclarator] ");
+  Modifiers ms = xbox<Modifiers>($1);
+  Expression tn = Expression::createEmpty();
+  AnsiString mn = xbox<AnsiString>($2);
+  Params p = xbox<Params>($4);
+  Statement s = xbox<Statement>($6);
+  MethodDeclarator m = MethodDeclarator(ms, tn, mn, p, s);
+  $$ = new Box<MethodDeclarator>(m);
+}
+
+
 classElem : variableDeclarator ';' {
   deb("[classElem : variableDeclarator] ");
   $$ = new Box<ClassElem>(ClassElem::createVariableDeclarator(xbox<VariableDeclarator>($1)));
 }
-*/
+
 
 classElem : methodDeclarator {
   deb("[classElem : methodDeclarator] ");

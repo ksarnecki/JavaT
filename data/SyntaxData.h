@@ -17,7 +17,6 @@ class HashMapFake : public DynSet<HashMap> {
 public:
   HashMapFake();
 
-  virtual AnsiString toXML() const;
 
   virtual ~HashMapFake();
 
@@ -33,7 +32,6 @@ class MapEntryFake : public DynSet<MapEntry> {
 public:
   MapEntryFake();
 
-  virtual AnsiString toXML() const;
 
   virtual ~MapEntryFake();
 
@@ -81,7 +79,6 @@ public:
   virtual const MapEntry& asJavaUtilMapEntry() const;
   virtual MapEntry& asJavaUtilMapEntry();
 
-  virtual AnsiString toXML() const;
 
   virtual ~RealType();
 
@@ -110,7 +107,6 @@ public:
   virtual RealType& getKey();
   virtual RealType& getValue();
 
-  virtual AnsiString toXML() const;
 
   virtual ~HashMap();
 
@@ -128,7 +124,6 @@ public:
   virtual RealType& getKey();
   virtual RealType& getValue();
 
-  virtual AnsiString toXML() const;
 
   virtual ~MapEntry();
 
@@ -146,7 +141,6 @@ public:
   virtual AnsiString& getName();
   virtual RealType& getRealType();
 
-  virtual AnsiString toXML() const;
 
   virtual ~TypeInfo();
 
@@ -161,7 +155,6 @@ class Types : public DynSet<TypeInfo> {
 public:
   Types();
 
-  virtual AnsiString toXML() const;
 
   virtual ~Types();
 

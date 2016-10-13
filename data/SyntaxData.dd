@@ -8,6 +8,7 @@ string
 basic
 
 HashMapFake = array of HashMap
+MapEntryFake = array of MapEntry
 
 RealType = variant {
   javaLangInteger,
@@ -16,6 +17,7 @@ RealType = variant {
   javaUtilRegexPattern,
   javaUtilRegexMatcher,
   javaUtilHashMap : HashMap,
+  javaUtilMapEntry : MapEntry,
   lkDBConn,
   lkSDBResult,
   unknown
@@ -24,6 +26,11 @@ RealType = variant {
 HashMap = record {
   key : RealType,
   value : RealType
+}
+
+MapEntry = record {
+  key : RealType,
+  value : RealType 
 }
 
 TypeInfo = record {

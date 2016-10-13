@@ -13,10 +13,12 @@ IntArray = array of int
 Expressions = array of Expression
 TestingExpressionFake = array of TestingExpression
 NumericBinaryExpressionFake = array of NumericBinaryExpression
+VariableDeclaratorFake = array of VariableDeclarator
 numericUnaryExpressionFake = array of NumericUnaryExpression
 MergeStatementFake = array of MergeStatement
 BlockStatementFake = array of BlockStatement
 ForStatementFake = array of ForStatement
+ForeachStatementFake = array of ForeachStatement
 WhileStatementFake = array of WhileStatement
 MultiIdentifierFake = array of MultiIdentifier
 VariableAssigmentFake = array of VariableAssigment
@@ -50,6 +52,7 @@ FloatExpression = record {
 Expression = variant {
   empty,
   variableAssigment : VariableAssigment,
+  variableDeclarator : VariableDeclarator,
   creatingExpression : CreatingExpression,
   identifier : IdentifierExpression,
   arrayIdentifier : ArrayIdentifier,
@@ -172,6 +175,7 @@ Statement = variant {
   mergeStatement : MergeStatement,
   returnStatement : Expression,
   forStatement : ForStatement,
+  foreachStatement : ForeachStatement,
   whileStatement : WhileStatement,
   ifStatement : IfStatement
 }
@@ -188,6 +192,12 @@ MergeStatement = record {
 ForInit = variant {
   expr : Expression,
   decl : VariableDeclarator
+}
+
+ForeachStatement = record {
+  iterator : VariableDeclarator,
+  object : Expression,
+  body : Statement
 }
 
 ForStatement = record {

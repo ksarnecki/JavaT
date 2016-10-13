@@ -9,6 +9,7 @@
 #include "Data.h"
 
 #include "CSTranslator.h"
+#include "PHPTranslator.h"
 
 DynSet<AnsiString> readData() {
   char buf[1024];
@@ -28,13 +29,29 @@ static bool checkArg(int argc, char* argv[], const AnsiString& v) {
 int main(int argc, char* argv[]) {
   DynSet<AnsiString> lines = readData();
   LineStream stream(lines);
-  try {
-    JavaFile data = javat_yacc_parse(stream);
-	  CSTranslator cs = CSTranslator();
-	  cs.translate(data);
-  } catch (const Exception& exc) {
-    std::cout << "Błąd: " << exc.Message.c_str() << std::endl;
+  if(checkArg(argc, argv, "-cs")) {
+    try {
+      JavaFile data = javat_yacc_parse(stream);
+      CSTranslator cs = CSTranslator();
+      cs.translate(data);
+    } catch (const Exception& exc) {
+      std::cout << "Błąd: " << exc.Message.c_str() << std::endl;
+    }
+  } else if(checkArg(argc, argv, "-php")) {
+    try {
+      JavaFile data = javat_yacc_parse(stream);
+      PHPTranslator php = PHPTranslator();
+      printf("<?php\n");
+      php.translate(data);
+      printf("?>");
+    } catch (const Exception& exc) {
+      std::cout << "Błąd: " << exc.Message.c_str() << std::endl;
+    }
+  } else {
+    printf("usage: JavaT [-cs] [-php] < file.java\n");
+    return 0;
   }
+  
   return 0;
 }
 

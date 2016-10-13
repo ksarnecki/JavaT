@@ -28,7 +28,11 @@ Expression CSArray::changeMethod(const MultiIdentifier& mi) {
       if(fce.getName().isIdentifier()) {
         AnsiString method = fce.getName().asIdentifier().getValue();
         CallParams p = fce.getParams();
-        //return Expression::createFunctionCallExpression(FunctionCallExpression(Expression::createIdentifier(IdentifierExpression(method)), p));
+         if(method=="Size") {
+          FunctionCallExpression fce = FunctionCallExpression(Expression::createIdentifier(IdentifierExpression("Count")),p);
+          MultiIdentifier m = MultiIdentifier(obj, Expression::createFunctionCallExpression(fce));
+          return Expression::createMultiIdentifier(m);
+        }
       }
     } 
   }

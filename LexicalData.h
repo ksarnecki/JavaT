@@ -86,6 +86,22 @@ public:
 };
 //----------------------------------
 
+//------------- VariableDeclaratorFake ---------------
+#include "DynSet.h"
+
+class VariableDeclarator;
+
+class VariableDeclaratorFake : public DynSet<VariableDeclarator> {
+public:
+  VariableDeclaratorFake();
+
+  virtual AnsiString toXML() const;
+
+  virtual ~VariableDeclaratorFake();
+
+};
+//----------------------------------
+
 //------------- numericUnaryExpressionFake ---------------
 #include "DynSet.h"
 
@@ -146,6 +162,22 @@ public:
   virtual AnsiString toXML() const;
 
   virtual ~ForStatementFake();
+
+};
+//----------------------------------
+
+//------------- ForeachStatementFake ---------------
+#include "DynSet.h"
+
+class ForeachStatement;
+
+class ForeachStatementFake : public DynSet<ForeachStatement> {
+public:
+  ForeachStatementFake();
+
+  virtual AnsiString toXML() const;
+
+  virtual ~ForeachStatementFake();
 
 };
 //----------------------------------
@@ -409,6 +441,7 @@ class Expression {
 
   static const int _TypeEmpty;
   static const int _TypeVariableAssigment;
+  static const int _TypeVariableDeclarator;
   static const int _TypeCreatingExpression;
   static const int _TypeIdentifier;
   static const int _TypeArrayIdentifier;
@@ -433,6 +466,7 @@ public:
 
   virtual bool isEmpty() const;
   virtual bool isVariableAssigment() const;
+  virtual bool isVariableDeclarator() const;
   virtual bool isCreatingExpression() const;
   virtual bool isIdentifier() const;
   virtual bool isArrayIdentifier() const;
@@ -450,6 +484,8 @@ public:
 
   virtual const VariableAssigment& asVariableAssigment() const;
   virtual VariableAssigment& asVariableAssigment();
+  virtual const VariableDeclarator& asVariableDeclarator() const;
+  virtual VariableDeclarator& asVariableDeclarator();
   virtual const CreatingExpression& asCreatingExpression() const;
   virtual CreatingExpression& asCreatingExpression();
   virtual const IdentifierExpression& asIdentifier() const;
@@ -485,6 +521,7 @@ public:
 
   static Expression createEmpty();
   static Expression createVariableAssigment(const VariableAssigment&);
+  static Expression createVariableDeclarator(const VariableDeclarator&);
   static Expression createCreatingExpression(const CreatingExpression&);
   static Expression createIdentifier(const IdentifierExpression&);
   static Expression createArrayIdentifier(const ArrayIdentifier&);
@@ -908,6 +945,7 @@ class Statement {
   static const int _TypeMergeStatement;
   static const int _TypeReturnStatement;
   static const int _TypeForStatement;
+  static const int _TypeForeachStatement;
   static const int _TypeWhileStatement;
   static const int _TypeIfStatement;
 
@@ -925,6 +963,7 @@ public:
   virtual bool isMergeStatement() const;
   virtual bool isReturnStatement() const;
   virtual bool isForStatement() const;
+  virtual bool isForeachStatement() const;
   virtual bool isWhileStatement() const;
   virtual bool isIfStatement() const;
 
@@ -940,6 +979,8 @@ public:
   virtual Expression& asReturnStatement();
   virtual const ForStatement& asForStatement() const;
   virtual ForStatement& asForStatement();
+  virtual const ForeachStatement& asForeachStatement() const;
+  virtual ForeachStatement& asForeachStatement();
   virtual const WhileStatement& asWhileStatement() const;
   virtual WhileStatement& asWhileStatement();
   virtual const IfStatement& asIfStatement() const;
@@ -956,6 +997,7 @@ public:
   static Statement createMergeStatement(const MergeStatement&);
   static Statement createReturnStatement(const Expression&);
   static Statement createForStatement(const ForStatement&);
+  static Statement createForeachStatement(const ForeachStatement&);
   static Statement createWhileStatement(const WhileStatement&);
   static Statement createIfStatement(const IfStatement&);
 
@@ -1024,6 +1066,27 @@ public:
 
   static ForInit createExpr(const Expression&);
   static ForInit createDecl(const VariableDeclarator&);
+
+};
+//----------------------------------
+
+//------------- ForeachStatement ---------------
+class ForeachStatement {
+  VariableDeclarator iterator;
+  Expression object;
+  Statement body;
+public:
+  ForeachStatement(const VariableDeclarator&, const Expression&, const Statement&);
+  virtual const VariableDeclarator& getIterator() const;
+  virtual const Expression& getObject() const;
+  virtual const Statement& getBody() const;
+  virtual VariableDeclarator& getIterator();
+  virtual Expression& getObject();
+  virtual Statement& getBody();
+
+  virtual AnsiString toXML() const;
+
+  virtual ~ForeachStatement();
 
 };
 //----------------------------------

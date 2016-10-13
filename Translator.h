@@ -18,7 +18,7 @@ class Translator {
     //Utils
     static TypeInfo getTypeInfo(const VariableDeclarator& v, Types&);
     static int findTypePos(const AnsiString&, const Types&);
-	static RealType getType(const Expression&, const Types&);
+	  static RealType getType(const Expression&, const Types&);
     
     //Operators
     virtual void preapreTestingOperator(const TestingOperator&, Types&, Builder&) = 0;
@@ -50,6 +50,7 @@ class Translator {
     virtual void prepareStatement(const Statement&, Types&, Builder&);
     virtual void prepareBlockStatement(const BlockStatement&, Types&, Builder&) = 0;
     virtual void prepareForStatement(const ForStatement&, Types&, Builder&) = 0;
+    virtual void prepareForeachStatement(const ForeachStatement&, Types&, Builder&) = 0;
     virtual void prepareVariableDeclarator(const VariableDeclarator&, Types&, Builder&) = 0;
     virtual void prepareVariableDeclaratorStatement(const VariableDeclarator&, Types&, Builder&) = 0;
     virtual void prepareExpressionStatement(const Expression&, Types&, Builder&) = 0;

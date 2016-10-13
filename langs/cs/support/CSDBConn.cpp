@@ -33,6 +33,11 @@ Expression CSDBConn::changeMethod(const MultiIdentifier& mi) {
           MultiIdentifier m = MultiIdentifier(obj, Expression::createFunctionCallExpression(fce));
           return Expression::createMultiIdentifier(m);
         }
+        if(method=="execute") {
+          FunctionCallExpression fce = FunctionCallExpression(Expression::createIdentifier(IdentifierExpression("Execute")),p);
+          MultiIdentifier m = MultiIdentifier(obj, Expression::createFunctionCallExpression(fce));
+          return Expression::createMultiIdentifier(m);
+        }
       }
     } 
   }
