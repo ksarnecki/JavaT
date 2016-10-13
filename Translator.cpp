@@ -11,6 +11,8 @@
 void Translator::prepareExpression(const Expression& e, Types& types, Builder& builder) {
   if(e.isVariableAssigment()) {
     prepareVariableAssigmentExpression(e.asVariableAssigment(), types, builder);
+  } else if(e.isVariableDeclarator()) {
+    prepareVariableDeclarator(e.asVariableDeclarator(), types, builder);
   } else if(e.isCreatingExpression()) {
     prepareCreatingExpression(e.asCreatingExpression(), types, builder);
   } else if(e.isIdentifier()) {
@@ -33,6 +35,8 @@ void Translator::prepareExpression(const Expression& e, Types& types, Builder& b
     prepareCondOperatorExpression(e.asCondOperatorExpression(), types, builder);
   } else if(e.isStringExpression()) {
     prepareStringExpression(e.asStringExpression(), types, builder);
+  } else if(e.isCharExpression()) {
+    prepareCharExpression(e.asCharExpression(), types, builder);
   } else if(e.isFloatExpression()) {
     prepareFloatExpression(e.asFloatExpression(), types, builder);
   } else if(e.isArrayCreatingExpression()) {

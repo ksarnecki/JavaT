@@ -42,6 +42,7 @@ class Translator {
     virtual void prepareNumericUnaryExpression(const NumericUnaryExpression&, Types&, Builder&) = 0;
     virtual void prepareCondOperatorExpression(const CondOperatorExpression&, Types&, Builder&) = 0;
     virtual void prepareStringExpression(const StringExpression&, Types&, Builder&) = 0;
+    virtual void prepareCharExpression(const CharExpression&, Types&, Builder&) = 0;
     virtual void prepareFloatExpression(const FloatExpression&, Types&, Builder&) = 0;
     virtual void prepareArrayCreatingExpression(const ArrayCreatingExpression&, Types&, Builder&) = 0;
     virtual void prepareAwaitExpression(const AwaitExpression&, Types&, Builder&) = 0;

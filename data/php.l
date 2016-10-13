@@ -56,6 +56,7 @@ extern "C"
 "class" { return CLASS; }
 "private" { return PRIVATE; }
 "static" { return STATIC; }
+"final" { return FINAL; }
 "package" { return PACKAGE; }
 \/\/.+\n { }
 [a-zA-Z0-9\_]+ { yylval = (int) strdup(yytext); return TEXT; }

@@ -250,6 +250,9 @@ void CSTranslator::prepareCondOperatorExpression(const CondOperatorExpression& c
   prepareExpression(coe.getFalseExp(), types, builder);
   builder.append(")");
 }
+void CSTranslator::prepareCharExpression(const CharExpression& ce, Types& types, Builder& builder) {
+  builder.append(ce.getValue());
+}
 void CSTranslator::prepareStringExpression(const StringExpression& se, Types& types, Builder& builder) {
   builder.append("\""+se.getValue()+"\"");
 }

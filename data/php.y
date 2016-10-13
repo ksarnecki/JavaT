@@ -55,15 +55,15 @@ static AnsiString xboxs(int v) {
 }
 
 void deb(AnsiString msg) {
-  fprintf(stderr, "%s\n", msg.c_str());
-  fflush(stdout);
+  //fprintf(stderr, "%s\n", msg.c_str());
+  //fflush(stdout);
 }
 
 JavaFile* result = 0;
 
 %}
 
-%token IMPORT TEXT PACKAGE PRIVATE VOID BOOL CLASS FOR WHILE PUBLIC STATIC RETURN NEW ABEG AWAIT AEND AAS ASYNC SAS BEG END PBEG PEND NEQ EQ EGR ESM INC DEC STRING TEMPL INT CHAR IF ELSE /* wszystkie nazwy tokenow majace wiecej niz jeden znak musza byc zadeklarowane */
+%token IMPORT TEXT PACKAGE PRIVATE VOID BOOL CLASS FOR WHILE PUBLIC STATIC RETURN NEW ABEG AWAIT AEND AAS ASYNC SAS BEG END PBEG PEND NEQ EQ EGR ESM INC DEC FINAL STRING TEMPL INT CHAR IF ELSE /* wszystkie nazwy tokenow majace wiecej niz jeden znak musza byc zadeklarowane */
 
 %left AAS SAS NEQ EQ EGR ESM INC DEC '+' '-' '<' '>' ABEG AEND
 %left '*' '/'
@@ -160,6 +160,11 @@ modifier : ASYNC {
 modifier : STATIC {
   deb("[modifier : STATIC] ");
   $$ = new Box<Modifier>(Modifier::createStatic());
+}
+
+modifier : FINAL {
+  deb("[modifier : STATIC] ");
+  $$ = new Box<Modifier>(Modifier::createFinal());
 }
 
 modifiers : modifiers modifier{
@@ -275,6 +280,11 @@ expression : expression '.' expression {
   deb("[expression '.' expression ] " + AnsiString($$));
 }
 
+expression : PBEG expression PEND expression {
+  //Dodać obsługę rzutowania.
+  $$ = $4;
+}
+
 expression : variableDeclarator {
   VariableDeclarator var = xbox<VariableDeclarator>($1);
   $$ = new Box<Expression>(Expression::createVariableDeclarator(var));
@@ -366,7 +376,7 @@ expression : STRING {
 }
 
 expression : CHAR {
-  $$ = new Box<Expression>(Expression::createStringExpression(StringExpression(xboxs($1))));
+  $$ = new Box<Expression>(Expression::createCharExpression(StringExpression(xboxs($1))));
 }
 
 expression : INT {

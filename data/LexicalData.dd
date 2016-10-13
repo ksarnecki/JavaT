@@ -28,6 +28,7 @@ IfStatementFake = array of IfStatement
 FunctionCallExpressionFake = array of FunctionCallExpression
 CreatingExpressionFake = array of CreatingExpression
 TemplateIdentifierFake = array of TemplateIdentifier
+CharExpressionFake = array of CharExpression
 ArrayCreatingExpressionFake = array of ArrayCreatingExpression
 AwaitExpressionFake = array of AwaitExpression
 
@@ -42,6 +43,10 @@ IdentifierExpression = record {
 }
 
 StringExpression = record {
+  value : string
+}
+
+CharExpression = record {
   value : string
 }
 
@@ -64,6 +69,7 @@ Expression = variant {
   numericUnaryExpression : NumericUnaryExpression,
   condOperatorExpression : CondOperatorExpression,
   stringExpression : StringExpression,
+  charExpression : CharExpression,
   floatExpression : FloatExpression,
   arrayCreatingExpression : ArrayCreatingExpression,
   awaitExpression : AwaitExpression
@@ -227,7 +233,8 @@ Modifier = variant {
   public,
   static,
   private,
-  async
+  async,
+  final
 }
 
 Modifiers = array of Modifier

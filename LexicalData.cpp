@@ -2488,6 +2488,7 @@ const int Modifier::_TypePublic = 0;
 const int Modifier::_TypeStatic = 1;
 const int Modifier::_TypePrivate = 2;
 const int Modifier::_TypeAsync = 3;
+const int Modifier::_TypeFinal = 4;
 void Modifier::init(int type, void* ptr) {
   if (type==_TypePublic) {
     _type = type;
@@ -2499,6 +2500,9 @@ void Modifier::init(int type, void* ptr) {
     _type = type;
     _ptr = 0;
   } else if (type==_TypeAsync) {
+    _type = type;
+    _ptr = 0;
+  } else if (type==_TypeFinal) {
     _type = type;
     _ptr = 0;
   }
@@ -2517,6 +2521,10 @@ void Modifier::clean() {
     if (_ptr!=0)
       throw Exception("Modifier::clean()");
   } else if (_type==_TypeAsync) {
+    _type = -1;
+    if (_ptr!=0)
+      throw Exception("Modifier::clean()");
+  } else if (_type==_TypeFinal) {
     _type = -1;
     if (_ptr!=0)
       throw Exception("Modifier::clean()");
@@ -2544,6 +2552,9 @@ bool Modifier::isPrivate() const {
 bool Modifier::isAsync() const {
   return _type==_TypeAsync;
 }
+bool Modifier::isFinal() const {
+  return _type==_TypeFinal;
+}
 
 AnsiString Modifier::toXML() const {
   StringBuffer _xml;
@@ -2556,6 +2567,8 @@ AnsiString Modifier::toXML() const {
       _xml += "<private/>";
     else if (_type==3)
       _xml += "<async/>";
+    else if (_type==4)
+      _xml += "<final/>";
     else
       throw Exception("Modifier::toXML(" + AnsiString(_type) + ")");
     _xml += "</Modifier>";
@@ -2586,6 +2599,12 @@ Modifier Modifier::createPrivate() {
 Modifier Modifier::createAsync() {
   Modifier _value;
   _value._type = _TypeAsync;
+  _value._ptr = 0;
+  return _value;
+}
+Modifier Modifier::createFinal() {
+  Modifier _value;
+  _value._type = _TypeFinal;
   _value._ptr = 0;
   return _value;
 }

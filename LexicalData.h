@@ -1194,6 +1194,7 @@ class Modifier {
   static const int _TypeStatic;
   static const int _TypePrivate;
   static const int _TypeAsync;
+  static const int _TypeFinal;
 
   virtual void init(int, void*);
   virtual void clean();
@@ -1206,6 +1207,7 @@ public:
   virtual bool isStatic() const;
   virtual bool isPrivate() const;
   virtual bool isAsync() const;
+  virtual bool isFinal() const;
 
 
   virtual AnsiString toXML() const;
@@ -1216,6 +1218,7 @@ public:
   static Modifier createStatic();
   static Modifier createPrivate();
   static Modifier createAsync();
+  static Modifier createFinal();
 
 };
 //----------------------------------
