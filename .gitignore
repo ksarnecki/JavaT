@@ -30,4 +30,5 @@
 
 test/*
 lex*
-php*
+php.tab.c
+php.tab.h
